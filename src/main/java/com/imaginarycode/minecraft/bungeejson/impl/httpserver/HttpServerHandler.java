@@ -86,7 +86,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
             final ApiRequest ar = new HttpServerApiRequest(((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress(),
                     params, bodyBuilder.toString());
             try {
-                if (handler.requiresAuthentication() && !BungeeJSONPlugin.getPlugin().getAuthenticationProvider().authenticate(ar, query.path())) {
+                if (handler.requiresAuthentication() && !BungeeJSONPlugin.getPlugin().authenticationProvider.authenticate(ar, query.path())) {
                     hrs = HttpResponseStatus.FORBIDDEN;
                     reply = BungeeJSONUtilities.error("Access denied.");
                 } else {
@@ -100,7 +100,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
             }
         }
 
-        String json = BungeeJSONPlugin.getPlugin().getGson().toJson(reply);
+        String json = BungeeJSONPlugin.getPlugin().gson.toJson(reply);
         DefaultFullHttpResponse hreply = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, hrs, Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)));
         // Add a reminder that we're still running the show.
         hreply.headers().set("Content-Type", "application/json; charset=UTF-8");

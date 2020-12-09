@@ -42,11 +42,11 @@ public class BungeeJSONPlugin extends Plugin {
 
     private static RequestManager requestManager = new BungeeJSONRequestManager();
     @Getter
-    private AuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider = new ApiKeyAuthenticationProvider();
     @Getter
-    private Gson gson = new Gson();
+    public Gson gson = new Gson();
     @Getter
-    private Configuration config = null;
+    public Configuration config = null;
 
     public static BungeeJSONPlugin getPlugin() {
         return plugin;
@@ -97,7 +97,7 @@ public class BungeeJSONPlugin extends Plugin {
 
     @Override
     public void onEnable() {
-        switch (getConfig().getString("auth-type", "api-key")) {
+        switch (config.getString("auth-type", "api-key")) {
             case "none":
             case "dummy":
                 authenticationProvider = new DummyAuthenticationProvider();
@@ -112,7 +112,7 @@ public class BungeeJSONPlugin extends Plugin {
             case "api-key":
                 break;
             default:
-                getLogger().info(getConfig().getString("auth-type") + " authentication is not known to this plugin, using api-key auth.");
+                getLogger().info(config.getString("auth-type") + " authentication is not known to this plugin, using api-key auth.");
                 break;
         }
         authenticationProvider.onEnable();

@@ -41,7 +41,7 @@ public class NettyBootstrap {
 
     public void initialize() {
         group = new NioEventLoopGroup(5, factory);
-        int port = BungeeJSONPlugin.getPlugin().getConfig().getInt("http-server-port", 7432);
+        int port = BungeeJSONPlugin.getPlugin().config.getInt("http-server-port", 7432);
         ServerBootstrap b = new ServerBootstrap();
         b.group(group)
                 .channel(NioServerSocketChannel.class)
@@ -62,5 +62,13 @@ public class NettyBootstrap {
                 BungeeJSONPlugin.getPlugin().getLogger().info("BungeeJSON server started on " + channelFuture.channel().localAddress());
             }
         });
+    }
+
+    public ChannelFuture getChannelFuture(){
+        return channelFuture;
+    }
+
+    public EventLoopGroup getGroup(){
+        return group;
     }
 }

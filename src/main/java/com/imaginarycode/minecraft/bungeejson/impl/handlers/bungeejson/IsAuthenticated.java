@@ -25,7 +25,7 @@ import java.util.Collections;
 public class IsAuthenticated implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
-        return Collections.singletonMap("is_authenticated", BungeeJSONPlugin.getPlugin().getAuthenticationProvider()
+        return Collections.singletonMap("is_authenticated", BungeeJSONPlugin.getPlugin().authenticationProvider
                 .authenticate(request, "/bungeejson/is_authenticated"));
     }
 

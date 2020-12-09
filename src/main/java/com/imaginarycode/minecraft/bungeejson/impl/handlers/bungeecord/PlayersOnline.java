@@ -18,25 +18,20 @@ package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
 
 import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
 import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import lombok.Data;
+import de.myzelyam.api.vanish.BungeeVanishAPI;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayersOnline implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
-        List<Player> players = new ArrayList<>();
+        List<String> players = new ArrayList<>();
         for (ProxiedPlayer pp : ProxyServer.getInstance().getPlayers()) {
-            Player player = new Player();
-            player.setName(pp.getName());
-            player.setUuid(pp.getUniqueId());
-            player.setServerName(pp.getServer().getInfo().getName());
-            players.add(player);
+            if(BungeeVanishAPI.isInvisible(pp)) continue;
+            players.add(pp.getName());
         }
         return players;
     }
@@ -44,12 +39,5 @@ public class PlayersOnline implements RequestHandler {
     @Override
     public boolean requiresAuthentication() {
         return false;
-    }
-
-    @Data
-    private class Player {
-        private String name;
-        private UUID uuid;
-        private String serverName;
     }
 }
