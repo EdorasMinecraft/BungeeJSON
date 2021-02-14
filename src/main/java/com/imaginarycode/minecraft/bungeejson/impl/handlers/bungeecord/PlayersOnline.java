@@ -22,16 +22,16 @@ import de.myzelyam.api.vanish.BungeeVanishAPI;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayersOnline implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
-        List<String> players = new ArrayList<>();
+        Map<String, String> players = new HashMap<>();
         for (ProxiedPlayer pp : ProxyServer.getInstance().getPlayers()) {
             if(BungeeVanishAPI.isInvisible(pp)) continue;
-            players.add(pp.getName());
+            players.put(pp.getName(), pp.getUniqueId().toString());
         }
         return players;
     }
