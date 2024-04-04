@@ -14,14 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
+package com.imaginarycode.minecraft.velocityjson.impl.handlers.velocity;
 
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONPlugin;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.RequestHandler;
+import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
+import de.myzelyam.api.vanish.VelocityVanishAPI;
 import lombok.Data;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +32,18 @@ import java.util.UUID;
 public class ServerList implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
+        ProxyServer proxy = VelocityJSONPlugin.getPlugin().getServer();
+
         List<Server> servers = new ArrayList<>();
-        for (ServerInfo si : ProxyServer.getInstance().getServers().values()) {
+        for (RegisteredServer rs : proxy.getAllServers()) {
+            ServerInfo si = rs.getServerInfo();
             Server server = new Server();
             server.setName(si.getName());
             List<Player> players = new ArrayList<>();
-            for (ProxiedPlayer pp : si.getPlayers()) {
+            for (com.velocitypowered.api.proxy.Player pp : rs.getPlayersConnected()) {
+                if(VelocityVanishAPI.isInvisible(pp)) continue;
                 Player player = new Player();
-                player.setName(pp.getName());
+                player.setName(pp.getUsername());
                 player.setUuid(pp.getUniqueId());
                 players.add(player);
             }
@@ -55,7 +61,7 @@ public class ServerList implements RequestHandler {
     @Data
     private class Server {
         private String name;
-        private List<Player> players;
+        private List<ServerList.Player> players;
     }
 
     @Data

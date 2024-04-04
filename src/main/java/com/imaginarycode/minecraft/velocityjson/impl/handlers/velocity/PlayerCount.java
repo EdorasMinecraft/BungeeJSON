@@ -14,19 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
+package com.imaginarycode.minecraft.velocityjson.impl.handlers.velocity;
 
 import com.google.common.collect.ImmutableMap;
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.md_5.bungee.api.ProxyServer;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONPlugin;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.RequestHandler;
+import com.velocitypowered.api.proxy.ProxyServer;
+import de.myzelyam.api.vanish.VelocityVanishAPI;
 
 public class PlayerCount implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
-        return ImmutableMap.of("current_players", ProxyServer.getInstance().getPlayers().stream().filter(p -> !BungeeVanishAPI.isInvisible(p)).count(), "max_players",
-                ProxyServer.getInstance().getConfig().getPlayerLimit());
+        ProxyServer server = VelocityJSONPlugin.getPlugin().getServer();
+        return ImmutableMap.of("current_players", server.getAllPlayers().stream().filter(p -> !VelocityVanishAPI.isInvisible(p)).count(), "max_players",
+                server.getConfiguration().getShowMaxPlayers());
     }
 
     @Override

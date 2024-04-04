@@ -14,22 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson;
+package com.imaginarycode.minecraft.velocityjson;
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
+import net.kyori.adventure.text.Component;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class BungeeJSONUtilities {
+public class VelocityJSONUtilities {
     private static final Pattern UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}");
     private static final Pattern MOJANGIAN_UUID_PATTERN = Pattern.compile("[a-fA-F0-9]{32}");
 
-    private BungeeJSONUtilities() {}
+    private VelocityJSONUtilities() {}
 
     private static final Map<String, String> STATUS_OK = Collections.singletonMap("status", "OK");
 
@@ -41,23 +42,22 @@ public class BungeeJSONUtilities {
         return STATUS_OK;
     }
 
-    public static BaseComponent singletonChatComponent(String text) {
-        TextComponent component = new TextComponent();
-        component.setText(text);
-        return component;
+    public static Component singletonChatComponent(String text) {
+        return Component.text(text);
     }
 
-    public static ProxiedPlayer resolvePlayer(String player) {
-        ProxiedPlayer player1 = ProxyServer.getInstance().getPlayer(player);
+    public static Optional<Player> resolvePlayer(String player) {
+        ProxyServer server = VelocityJSONPlugin.getPlugin().getServer();
+        Optional<Player> player1 = server.getPlayer(player);
 
-        if (player1 != null)
+        if (player1.isPresent())
             return player1;
 
         if (UUID_PATTERN.matcher(player).matches())
-            return ProxyServer.getInstance().getPlayer(UUID.fromString(player));
+            return server.getPlayer(UUID.fromString(player));
 
         if (MOJANGIAN_UUID_PATTERN.matcher(player).matches()) {
-            return ProxyServer.getInstance().getPlayer(UUID.fromString(player.substring(0, 8) + "-" + player.substring(8, 12) + "-" + player.substring(12, 16) + "-" + player.substring(16, 20) + "-" + player.substring(20, 32)));
+            return server.getPlayer(UUID.fromString(player.substring(0, 8) + "-" + player.substring(8, 12) + "-" + player.substring(12, 16) + "-" + player.substring(16, 20) + "-" + player.substring(20, 32)));
         }
 
         return null;

@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
+package com.imaginarycode.minecraft.velocityjson.impl.httpserver;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
 
 import java.net.InetAddress;
 

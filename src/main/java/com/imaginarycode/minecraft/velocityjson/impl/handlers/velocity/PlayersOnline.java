@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeecord;
+package com.imaginarycode.minecraft.velocityjson.impl.handlers.velocity;
 
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import de.myzelyam.api.vanish.BungeeVanishAPI;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONPlugin;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.RequestHandler;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
+import de.myzelyam.api.vanish.VelocityVanishAPI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +29,12 @@ import java.util.Map;
 public class PlayersOnline implements RequestHandler {
     @Override
     public Object handle(ApiRequest request) {
+        ProxyServer server = VelocityJSONPlugin.getPlugin().getServer();
+
         Map<String, String> players = new HashMap<>();
-        for (ProxiedPlayer pp : ProxyServer.getInstance().getPlayers()) {
-            if(BungeeVanishAPI.isInvisible(pp)) continue;
-            players.put(pp.getName(), pp.getUniqueId().toString());
+        for (Player pp : server.getAllPlayers()) {
+            if(VelocityVanishAPI.isInvisible(pp)) continue;
+            players.put(pp.getUsername(), pp.getUniqueId().toString());
         }
         return players;
     }

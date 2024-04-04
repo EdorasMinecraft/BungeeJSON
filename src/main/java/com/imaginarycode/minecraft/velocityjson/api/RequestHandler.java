@@ -14,21 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.handlers.bungeejson;
+package com.imaginarycode.minecraft.velocityjson.api;
 
-import com.google.common.collect.ImmutableMap;
-import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+/**
+ * This interface specifies a request handler.
+ */
+public interface RequestHandler {
+    /**
+     * Handle the request.
+     * @param request an {@link com.imaginarycode.minecraft.velocityjson.api.ApiRequest}
+     * @return an Object that can be serialized by Gson
+     */
+    Object handle(ApiRequest request);
 
-public class Version implements RequestHandler {
-    @Override
-    public Object handle(ApiRequest request) {
-        return ImmutableMap.of("version", BungeeJSONPlugin.getPlugin().getDescription().getVersion(), "author", BungeeJSONPlugin.getPlugin().getDescription().getAuthor());
-    }
-
-    @Override
-    public boolean requiresAuthentication() {
-        return false;
-    }
+    /**
+     * Return true or false if this request requires authentication.
+     * @return whether or not this handler requires authentication
+     */
+    boolean requiresAuthentication();
 }

@@ -14,27 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl;
+package com.imaginarycode.minecraft.velocityjson.impl.handlers.velocityjson;
 
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
-import com.imaginarycode.minecraft.bungeejson.api.RequestManager;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONPlugin;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.RequestHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
-public class BungeeJSONRequestManager implements RequestManager {
-    private Map<String, RequestHandler> endpoints = new HashMap<>();
-
+public class IsAuthenticated implements RequestHandler {
     @Override
-    public void registerEndpoint(String endpoint, RequestHandler handler) {
-        String realEndpoint = endpoint;
-        if (!realEndpoint.startsWith("/"))
-            realEndpoint = "/" + endpoint;
-        endpoints.put(realEndpoint, handler);
+    public Object handle(ApiRequest request) {
+        return Collections.singletonMap("is_authenticated", VelocityJSONPlugin.getPlugin().authenticationProvider
+                .authenticate(request, "/bungeejson/is_authenticated"));
     }
 
     @Override
-    public RequestHandler getHandlerForEndpoint(String uri) {
-        return endpoints.get(uri);
+    public boolean requiresAuthentication() {
+        return false;
     }
 }

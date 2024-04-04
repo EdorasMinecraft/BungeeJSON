@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.api;
+package com.imaginarycode.minecraft.velocityjson.api;
 
 import com.google.common.collect.ListMultimap;
 

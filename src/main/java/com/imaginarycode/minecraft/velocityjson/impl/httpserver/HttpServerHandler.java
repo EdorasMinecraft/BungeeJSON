@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with BungeeJSON.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.imaginarycode.minecraft.bungeejson.impl.httpserver;
+package com.imaginarycode.minecraft.velocityjson.impl.httpserver;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.imaginarycode.minecraft.bungeejson.BungeeJSONPlugin;
-import com.imaginarycode.minecraft.bungeejson.BungeeJSONUtilities;
-import com.imaginarycode.minecraft.bungeejson.api.ApiRequest;
-import com.imaginarycode.minecraft.bungeejson.api.RequestHandler;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONPlugin;
+import com.imaginarycode.minecraft.velocityjson.VelocityJSONUtilities;
+import com.imaginarycode.minecraft.velocityjson.api.ApiRequest;
+import com.imaginarycode.minecraft.velocityjson.api.RequestHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -34,7 +34,6 @@ import io.netty.util.CharsetUtil;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpRequest request;
@@ -78,34 +77,34 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<Object> {
 
         Object reply;
         HttpResponseStatus hrs;
-        final RequestHandler handler = BungeeJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
+        final RequestHandler handler = VelocityJSONPlugin.getRequestManager().getHandlerForEndpoint(query.path());
         if (handler == null) {
-            reply = BungeeJSONUtilities.error("No such endpoint exists.");
+            reply = VelocityJSONUtilities.error("No such endpoint exists.");
             hrs = HttpResponseStatus.NOT_FOUND;
         } else {
             final ApiRequest ar = new HttpServerApiRequest(((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress(),
                     params, bodyBuilder.toString());
             try {
-                if (handler.requiresAuthentication() && !BungeeJSONPlugin.getPlugin().authenticationProvider.authenticate(ar, query.path())) {
+                if (handler.requiresAuthentication() && !VelocityJSONPlugin.getPlugin().authenticationProvider.authenticate(ar, query.path())) {
                     hrs = HttpResponseStatus.FORBIDDEN;
-                    reply = BungeeJSONUtilities.error("Access denied.");
+                    reply = VelocityJSONUtilities.error("Access denied.");
                 } else {
                     reply = handler.handle(ar);
                     hrs = HttpResponseStatus.OK;
                 }
             } catch (Throwable throwable) {
                 hrs = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-                reply = BungeeJSONUtilities.error("An internal error has occurred. Information has been logged to the console.");
-                BungeeJSONPlugin.getPlugin().getLogger().log(Level.WARNING, "Error while handling " + hr.getUri() + " from " + ar.getRemoteIp(), throwable);
+                reply = VelocityJSONUtilities.error("An internal error has occurred. Information has been logged to the console.");
+                VelocityJSONPlugin.getPlugin().getLogger().warn("Error while handling " + hr.getUri() + " from " + ar.getRemoteIp(), throwable);
             }
         }
 
-        String json = BungeeJSONPlugin.getPlugin().gson.toJson(reply);
+        String json = VelocityJSONPlugin.getPlugin().gson.toJson(reply);
         DefaultFullHttpResponse hreply = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, hrs, Unpooled.wrappedBuffer(json.getBytes(CharsetUtil.UTF_8)));
         // Add a reminder that we're still running the show.
         hreply.headers().set("Content-Type", "application/json; charset=UTF-8");
         hreply.headers().set("Access-Control-Allow-Origin", "*");
-        hreply.headers().set("Server", "BungeeJSON/0.1");
+        hreply.headers().set("Server", "VelocityJSON/0.1");
         hreply.headers().set("Content-Length", json.length());
         hreply.headers().set("Connection", "keep-alive");
         return hreply;
